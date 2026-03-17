@@ -416,15 +416,11 @@ kubectl apply -f canary-ingress.yaml
 
 This sets the canary weight to 0%, routing all traffic back to v1.
 
----
-
 ### Best Practice
 - **Start small**: Begin with 5–20% traffic to the canary.  
 - **Monitor closely**: Use logs, metrics, and alerts to watch for errors.  
 - **Rollback fast**: If problems occur, delete the canary ingress or scale down the deployment.  
 - **Iterate safely**: Fix issues, redeploy v2, and gradually increase traffic again.
-
----
 
 By following these rollback strategies, you ensure that your users always have a stable experience while you experiment with new releases.
 
