@@ -3,8 +3,6 @@
 This repository demonstrates how to set up **MicroK8s** and run a simple **canary deployment** using ingress.  
 You’ll deploy two versions of a demo app (`v1` and `v2`) and configure ingress to send ~20% of traffic to the canary.
 
----
-
 ## Install MicroK8s Manually
 
 ```bash
@@ -31,7 +29,7 @@ microk8s enable dns storage
 microk8s enable ingress
 ```
 
----
+You can run script  to install microk8s from below repo as well 
 
 ## Clone Repo and Run Script
 
@@ -75,8 +73,6 @@ echo "=== Setup complete! ==="
 echo "IMPORTANT: Please log out and log back in (or run 'newgrp microk8s') to refresh your group membership before using kubectl."
 ```
 
----
-
 ## Expose Ingress via NodePort
 
 By default, MicroK8s ingress doesn’t create a Service. Add one manually:
@@ -117,8 +113,6 @@ For local testing, add an entry in `/etc/hosts`:
 ```bash
 echo "10.10.0.2 demo.local" | sudo tee -a /etc/hosts
 ```
-
----
 
 ## Deploy Applications
 
@@ -207,9 +201,6 @@ spec:
   - port: 80
     targetPort: 80
 ```
-
----
-
 ## Ingress Rules
 
 ### Production Ingress
@@ -258,9 +249,6 @@ spec:
             port:
               number: 80
 ```
-
----
-
 ## Test Canary Deployment
 
 ```bash
