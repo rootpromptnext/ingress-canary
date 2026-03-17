@@ -1,3 +1,42 @@
+```text
+                +-------------------+
+                |   Client Request  |
+                +-------------------+
+                          |
+                          v
+                +-------------------+
+                |   Ingress (NGINX) |
+                +-------------------+
+                          |
+          ---------------------------------
+          |                               |
+          v                               v
++-------------------+           +-------------------+
+|  Service v1       |           |  Service v2       |
+| (Production Pods) |           | (Canary Pods)     |
++-------------------+           +-------------------+
+          |                               |
+          v                               v
++-------------------+           +-------------------+
+|  Deployment v1    |           |  Deployment v2    |
+|  "Hello from v1"  |           |  "Hello from v2"  |
++-------------------+           +-------------------+
+```
+
+### What is a Canary Deployment?
+
+A **canary deployment** is a strategy for releasing new versions of software gradually and safely:
+
+- **Production (v1)**: The stable version of your application that most users interact with.  
+- **Canary (v2)**: The new version, deployed alongside production, but only a small percentage of traffic is routed to it.  
+- **Traffic Split**: Ingress (or a service mesh) directs most requests to v1, and a smaller fraction (e.g., 20%) to v2.  
+- **Purpose**: This allows you to test the new version in real conditions with real users, while minimizing risk.  
+- **Rollback Safety**: If v2 has issues, you can quickly remove it without affecting most users.  
+
+The term “canary” comes from the old practice of using canaries in coal mines — if the canary showed distress, miners knew there was danger. Similarly, in software, the canary deployment acts as an early warning system for problems in new releases.
+
+---
+
 # Ingress Canary Demo with MicroK8s
 
 This repository demonstrates how to set up **MicroK8s** and run a simple **canary deployment** using ingress.  
@@ -336,3 +375,57 @@ curl http://demo.local
 You should see:
 - **Hello from v1** most of the time (production).  
 - **Hello from v2** about 20% of the time (canary).
+
+## Rolling Back a Canary Deployment
+
+A canary deployment lets you test a new version (v2) with a small percentage of traffic while most users stay on the stable version (v1).  
+If issues are detected in the canary, you can **rollback quickly** to protect users.
+
+### Option 1: Remove Canary Ingress
+Simply delete the canary ingress resource so all traffic goes back to v1:
+
+```bash
+kubectl delete ingress canary-ingress
+```
+
+Now only the production ingress (`demo-ingress`) remains, routing 100% of traffic to v1.
+
+### Option 2: Scale Down Canary Deployment
+Keep the ingress rules but scale the canary deployment to zero replicas:
+
+```bash
+kubectl scale deployment canary --replicas=0
+```
+
+This effectively disables v2 pods while leaving the configuration intact.
+
+### Option 3: Adjust Canary Weight
+If you want to reduce traffic gradually instead of cutting it off completely, edit the canary ingress annotation:
+
+```yaml
+annotations:
+  nginx.ingress.kubernetes.io/canary: "true"
+  nginx.ingress.kubernetes.io/canary-weight: "0"
+```
+
+Apply the change:
+
+```bash
+kubectl apply -f canary-ingress.yaml
+```
+
+This sets the canary weight to 0%, routing all traffic back to v1.
+
+---
+
+### Best Practice
+- **Start small**: Begin with 5–20% traffic to the canary.  
+- **Monitor closely**: Use logs, metrics, and alerts to watch for errors.  
+- **Rollback fast**: If problems occur, delete the canary ingress or scale down the deployment.  
+- **Iterate safely**: Fix issues, redeploy v2, and gradually increase traffic again.
+
+---
+
+By following these rollback strategies, you ensure that your users always have a stable experience while you experiment with new releases.
+
+
