@@ -35,8 +35,6 @@ A **canary deployment** is a strategy for releasing new versions of software gra
 
 The term “canary” comes from the old practice of using canaries in coal mines — if the canary showed distress, miners knew there was danger. Similarly, in software, the canary deployment acts as an early warning system for problems in new releases.
 
----
-
 # Ingress Canary Demo with MicroK8s
 
 This repository demonstrates how to set up **MicroK8s** and run a simple **canary deployment** using ingress.  
