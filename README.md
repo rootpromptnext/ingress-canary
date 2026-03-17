@@ -29,7 +29,7 @@ microk8s enable dns storage
 microk8s enable ingress
 ```
 
-You can run script  to install microk8s from below repo as well 
+### You can run script  to install microk8s from below repo as well 
 
 ## Clone Repo and Run Script
 
