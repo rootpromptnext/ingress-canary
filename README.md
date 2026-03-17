@@ -249,6 +249,14 @@ spec:
             port:
               number: 80
 ```
+
+### Deploy Applications
+Apply the manifests (`deploy-v1.yaml`, `deploy-v2.yaml`, `demo-ingress.yaml`, `canary-ingress.yaml`).  
+
+```bash
+kubectl apply -f manifests/
+```
+
 ## Test Canary Deployment
 
 ```bash
